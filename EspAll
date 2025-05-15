@@ -1,0 +1,99 @@
+-- Made by Script📃 Executor2
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Màu sắc cho từng loại ESP
+local colors = {
+    Krasue = Color3.fromRGB(255, 0, 0),
+    MoneyBag = Color3.fromRGB(255, 255, 0),
+    Eye = Color3.fromRGB(0, 170, 255)
+}
+
+-- Hàm tạo Highlight và BillboardGui
+local function createESP(target, labelText, color)
+    if not target:IsA("BasePart") then return end
+
+    if target:FindFirstChild("ESP_GUI") or target:FindFirstChild("ESP_HL") then return end
+
+    -- Highlight
+    local hl = Instance.new("Highlight")
+    hl.Name = "ESP_HL"
+    hl.FillColor = color
+    hl.OutlineColor = color
+    hl.OutlineTransparency = 0
+    hl.FillTransparency = 0.5
+    hl.Adornee = target
+    hl.Parent = target
+
+    -- Text
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ESP_GUI"
+    billboard.Adornee = target
+    billboard.Size = UDim2.new(0, 100, 0, 40)
+    billboard.AlwaysOnTop = true
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = labelText
+    textLabel.TextColor3 = color
+    textLabel.TextStrokeTransparency = 0
+    textLabel.TextScaled = true
+    textLabel.Font = Enum.Font.GothamBold
+    textLabel.Parent = billboard
+
+    billboard.Parent = target
+end
+
+-- Hàm kiểm tra và gắn ESP
+local function attachESP(obj)
+    local label = nil
+    if obj.Name == "Krasue" then
+        label = "Krasue"
+    elseif obj.Name == "MoneyBag" then
+        label = "Money Bag"
+    elseif obj.Name == "Eye" then
+        label = "Eye"
+    end
+    if not label then return end
+
+    local targetPart = nil
+
+    if obj:IsA("BasePart") then
+        targetPart = obj
+    elseif obj:IsA("Model") then
+        targetPart = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+    end
+
+    if targetPart then
+        createESP(targetPart, label, colors[obj.Name])
+    end
+end
+
+-- Quét toàn bộ workspace ban đầu
+for _, obj in pairs(workspace:GetDescendants()) do
+    attachESP(obj)
+end
+
+-- Theo dõi khi có đối tượng mới
+workspace.DescendantAdded:Connect(function(obj)
+    task.wait(0.1)
+    attachESP(obj)
+end)
+
+-- Xoá ESP khi object biến mất
+RunService.Heartbeat:Connect(function()
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            if colors[obj.Name] then
+                local part = obj:IsA("BasePart") and obj or (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart"))
+                if part and (part.Parent == nil or not part:IsDescendantOf(workspace)) then
+                    if part:FindFirstChild("ESP_GUI") then part.ESP_GUI:Destroy() end
+                    if part:FindFirstChild("ESP_HL") then part.ESP_HL:Destroy() end
+                end
+            end
+        end
+    end
+end)
