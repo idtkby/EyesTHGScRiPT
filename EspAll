@@ -7,13 +7,14 @@ local LocalPlayer = Players.LocalPlayer
 local colors = {
     Krasue = Color3.fromRGB(255, 0, 0),
     MoneyBag = Color3.fromRGB(255, 255, 0),
-    Eye = Color3.fromRGB(0, 170, 255)
+    Eye = Color3.fromRGB(0, 170, 255),
+    ["Basement Key"] = Color3.fromRGB(150, 150, 150),
+    SafeCode = Color3.fromRGB(255, 255, 255)
 }
 
 -- Hàm tạo Highlight và BillboardGui
 local function createESP(target, labelText, color)
     if not target:IsA("BasePart") then return end
-
     if target:FindFirstChild("ESP_GUI") or target:FindFirstChild("ESP_HL") then return end
 
     -- Highlight
@@ -56,11 +57,14 @@ local function attachESP(obj)
         label = "Money Bag"
     elseif obj.Name == "Eye" then
         label = "Eye"
+    elseif obj.Name == "Basement Key" then
+        label = "Basement Key"
+    elseif obj.Name == "SafeCode" then
+        label = "Safe Code"
     end
     if not label then return end
 
     local targetPart = nil
-
     if obj:IsA("BasePart") then
         targetPart = obj
     elseif obj:IsA("Model") then
