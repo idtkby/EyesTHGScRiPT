@@ -8,7 +8,7 @@ local colors = {
     Krasue = Color3.fromRGB(255, 0, 0),
     MoneyBag = Color3.fromRGB(255, 255, 0),
     Eye = Color3.fromRGB(0, 170, 255),
-    ["Basement Key"] = Color3.fromRGB(150, 150, 150),
+    Tools = Color3.fromRGB(230, 230, 230),
     SafeCode = Color3.fromRGB(255, 255, 255)
 }
 
@@ -57,7 +57,7 @@ local function attachESP(obj)
         label = "Money Bag"
     elseif obj.Name == "Eye" then
         label = "Eye"
-    elseif obj.Name == "Basement Key" then
+    elseif obj.Name == "Tools" then
         label = "Basement Key"
     elseif obj.Name == "SafeCode" then
         label = "Safe Code"
